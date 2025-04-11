@@ -1,10 +1,12 @@
 import re
-from flask import Flask
+from flask import Flask, render_template
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
 from markdown import markdown  # markdown 라이브러리 사용
 
+def page_not_found(e):
+    return render_template('404.html'), 404
 
 naming_convention = {
     "ix": 'ix_%(column_0_label)s',
@@ -19,6 +21,8 @@ migrate = Migrate()
 def create_app():
     app = Flask(__name__)
     app.config.from_envvar('APP_CONFIG_FILE')
+        # 오류페이지
+    app.register_error_handler(404, page_not_found)
 
     # Markdown 필터 추가
     @app.template_filter('markdown')
